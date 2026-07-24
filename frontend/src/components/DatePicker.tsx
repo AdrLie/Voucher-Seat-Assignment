@@ -123,6 +123,11 @@ export function DatePicker({ setValue, watch, error }: DatePickerProps) {
               <div key={`blank-${blank}`} className="p-1.5" />
             ))}
             {days.map(day => {
+              const cellDate = new Date(currentYear, currentMonth, day);
+              const todayDate = new Date();
+              todayDate.setHours(0, 0, 0, 0);
+              const isPast = cellDate < todayDate;
+
               const isSelected = selectedDate?.getDate() === day && 
                                  selectedDate?.getMonth() === currentMonth && 
                                  selectedDate?.getFullYear() === currentYear;
@@ -135,14 +140,17 @@ export function DatePicker({ setValue, watch, error }: DatePickerProps) {
                 <button
                   key={day}
                   type="button"
+                  disabled={isPast}
                   onClick={() => handleSelectDate(day)}
                   className={`
                     w-7 h-7 flex items-center justify-center rounded-full text-xs transition-all mx-auto font-medium
-                    ${isSelected 
-                      ? 'bg-gradient-to-br from-red-600 to-orange-500 text-white font-bold shadow-md shadow-red-500/40' 
-                      : isToday
-                        ? 'bg-red-50 text-red-600 font-bold hover:bg-red-100'
-                        : 'text-slate-700 hover:bg-slate-100'
+                    ${isPast
+                      ? 'text-slate-300 cursor-not-allowed'
+                      : isSelected 
+                        ? 'bg-gradient-to-br from-red-600 to-orange-500 text-white font-bold shadow-md shadow-red-500/40' 
+                        : isToday
+                          ? 'bg-red-50 text-red-600 font-bold hover:bg-red-100'
+                          : 'text-slate-700 hover:bg-slate-100'
                     }
                   `}
                 >
